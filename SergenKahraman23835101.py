@@ -1,13 +1,10 @@
 # Sergen KAHRAMAN - 23835101 -İstatistiksel Yöntemler Ve Veri Analizi Ödevi
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 
 # Helper Methods
-
-
 def GroupBy(dataset, indipendent, dependent):
     return [dataset[dataset[indipendent] == bolum][dependent] for bolum in dataset[indipendent].unique()]
 
