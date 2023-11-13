@@ -21,11 +21,21 @@ stats2 = araSinavData.describe()
 print("Ara Sınav: ",stats2);
 print("Basıklık (Kurtosis):", stats.kurtosis(araSinavData))
 print("Çarpıklık (Skewness):", stats.skew(araSinavData))
+
 stats3 = finalSinavData.describe()
 print("Final Sınavı: ",stats3);
 print("Basıklık (Kurtosis):", stats.kurtosis(finalSinavData))
 print("Çarpıklık (Skewness):", stats.skew(finalSinavData))
 
+# Shapiro-Wilk Anlamlılık Testi 
+dataSetNames = ['QuizOrtalama', 'AraSinav', 'FinalSinav']
+for dataSetName in dataSetNames:
+    data = dataset[dataSetName]
+    statsShapiro, pValueShapiro = stats.shapiro(data)
+    if pValueShapiro > 0.05:
+        print(f"{dataSetName} için P-değeri: {pValueShapiro}. {dataSetName} için veriler normal dağılıma sahiptir.\n")
+    else:
+        print(f"{dataSetName} için P-değeri: {pValueShapiro}. {dataSetName} için veriler normal dağılıma uygun değildir.\n")
 
 # Histogram grafikleri
 # Quiz
@@ -33,32 +43,33 @@ plt.hist(quizData, bins=5, color='blue', edgecolor='black')
 plt.title('Quiz Histogram Grafiği')
 plt.xlabel('Değerler')
 plt.ylabel('Frekans')
-#plt.show()
+# plt.show()
 
 # Ara Sınav
 plt.hist(araSinavData, bins=5, color='blue', edgecolor='black')  
 plt.title('Ara Sınav Histogram Grafiği')
 plt.xlabel('Değerler')
 plt.ylabel('Frekans')
-#plt.show()
+# plt.show()
 
 # Final Sınavı
 plt.hist(finalSinavData, bins=5, color='blue', edgecolor='black')  
 plt.title('Final Sınavı Histogram Grafiği')
 plt.xlabel('Değerler')
 plt.ylabel('Frekans')
-#plt.show()
+# plt.show()
 
 
-# Normal dağılıma yakın --> Paired T-Testi
-stats1, pValue1 = stats.ttest_rel(quizData, araSinavData)
-stats2, pValue2 = stats.ttest_rel(quizData, finalSinavData)
+# Quiz&Final Normal dağılıma yakın --> parametrik --> Paired T-Testi
+# Quiz&AraSınav Normal dağılıma yakın değil --> non-parametrik --> Wilcoxon İşaretli Sıralar Testi
+stats1, pValue1 = stats.ttest_rel(quizData, finalSinavData)
 sigValue = 0.05
 if pValue1 < sigValue:
     print(f"QuizOrtalama ve AraSinav için aralarında anlamlı bir fark vardır. Sig. Value: {round(pValue1,3)}")
 else:
     print(f"QuizOrtalama ve AraSinav için aralarında anlamlı bir fark yoktur. Sig. Value: {round(pValue1,3)}")
 
+stats2, pValue2 = stats.wilcoxon(quizData, araSinavData)
 if pValue2 < sigValue:
     print(f"QuizOrtalama ve FinalSınav için aralarında anlamlı bir fark vardır. Sig. Value: {round(pValue2,3)}")
 else:
